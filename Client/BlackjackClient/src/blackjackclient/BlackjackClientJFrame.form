@@ -36,26 +36,26 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="playerCard1JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard2JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel2" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard3JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel3" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard4JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel4" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard5JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel5" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard6JLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="playerCard1JLabel7" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard7JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel6" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard8JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel8" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard9JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel9" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard10JLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="playerCard1JLabel10" min="-2" max="-2" attributes="0"/>
+                              <Component id="playerCard11JLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -165,19 +165,19 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="playerCard1JLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel2" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel3" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel4" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel5" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard2JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard3JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard4JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard5JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard6JLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="playerCard1JLabel7" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel6" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel8" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel9" min="-2" max="-2" attributes="0"/>
-                          <Component id="playerCard1JLabel10" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard7JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard8JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard9JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard10JLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="playerCard11JLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   </Group>
@@ -198,6 +198,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Deal"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dealJButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="hitJButton">
       <Properties>
@@ -206,6 +209,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Hit"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hitJButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="standJButton">
       <Properties>
@@ -214,6 +220,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Stand"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="standJButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -317,7 +326,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel1">
+    <Component class="javax.swing.JLabel" name="playerCard2JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -325,7 +334,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel2">
+    <Component class="javax.swing.JLabel" name="playerCard3JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -333,7 +342,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel3">
+    <Component class="javax.swing.JLabel" name="playerCard4JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -341,7 +350,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel4">
+    <Component class="javax.swing.JLabel" name="playerCard5JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -349,7 +358,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel5">
+    <Component class="javax.swing.JLabel" name="playerCard6JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -357,7 +366,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel6">
+    <Component class="javax.swing.JLabel" name="playerCard8JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -365,7 +374,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel7">
+    <Component class="javax.swing.JLabel" name="playerCard7JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -373,7 +382,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel8">
+    <Component class="javax.swing.JLabel" name="playerCard9JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -381,7 +390,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel9">
+    <Component class="javax.swing.JLabel" name="playerCard10JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>
@@ -389,7 +398,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="playerCard1JLabel10">
+    <Component class="javax.swing.JLabel" name="playerCard11JLabel">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/blackjackclient/images/1c.png"/>

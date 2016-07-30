@@ -5,19 +5,256 @@
  */
 package blackjackclient;
 
+//import com.deitel.java.blackjack.Blackjack;
+//import com.deitel.java.blackjack.BlackjackService;
+import java.awt.Color;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.xml.ws.BindingProvider;
+
 /**
  *
  * @author ambitos
  */
 public class BlackjackClientJFrame extends javax.swing.JFrame {
 
+    private String playerCards;
+    private String dealerCards; 
+    private ArrayList<JLabel> cardBoxes;
+    private int currentPlayerCard;
+    private int currentDealerCard;
+    private BlackjackService blackjackService;
+    private Blackjack blackjackProxy;
+    
+    private enum GameStatus
+    {
+        PUSH,
+        LOSE,
+        WIN,
+        BLACKJACK
+    }
+    
     /**
      * Creates new form BlackjackClientJFrame
      */
     public BlackjackClientJFrame() {
         initComponents();
+        
+        getContentPane().setBackground(new Color(0,180,0));
+        
+        try
+        {
+            blackjackService = new BlackjackService();
+            blackjackProxy = blackjackService.getBlackjackPort();
+            
+            ( (BindingProvider) blackjackProxy ).getRequestContext().put(BindingProvider.SESSION_MAINTAIN_PROPERTY, true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        cardBoxes = new ArrayList<JLabel>();
+        
+        cardBoxes.add(dealerCard1JLabel); 
+        cardBoxes.add(dealerCard2JLabel); 
+        cardBoxes.add(dealerCard3JLabel); 
+        cardBoxes.add(dealerCard4JLabel); 
+        cardBoxes.add(dealerCard5JLabel); 
+        cardBoxes.add(dealerCard6JLabel); 
+        cardBoxes.add(dealerCard7JLabel); 
+        cardBoxes.add(dealerCard8JLabel); 
+        cardBoxes.add(dealerCard9JLabel); 
+        cardBoxes.add(dealerCard10JLabel); 
+        cardBoxes.add(dealerCard11JLabel); 
+        cardBoxes.add(playerCard1JLabel); 
+        cardBoxes.add(playerCard2JLabel); 
+        cardBoxes.add(playerCard3JLabel); 
+        cardBoxes.add(playerCard4JLabel); 
+        cardBoxes.add(playerCard5JLabel); 
+        cardBoxes.add(playerCard6JLabel); 
+        cardBoxes.add(playerCard7JLabel); 
+        cardBoxes.add(playerCard8JLabel); 
+        cardBoxes.add(playerCard9JLabel); 
+        cardBoxes.add(playerCard10JLabel); 
+        cardBoxes.add(playerCard11JLabel); 
+        
+        InitForm();
+    }
+    
+    private void InitForm()
+    {
+        InitLabelsSatus(false,0, 0);
+        InitCards();
+        InitActionButtons();
+    }
+    
+    private void InitLabelsSatus(Boolean status,int dealerScore,int playerScore)
+    {
+        gameResultsJLabel.setVisible(status);
+        dealerJLabel.setVisible(status);
+        dealerScoreJLabel.setText(String.valueOf(dealerScore));
+        dealerScoreJLabel.setVisible(status);
+        playerScoreJLabel.setText(String.valueOf(playerScore));
+        playerScoreJLabel.setVisible(status);
+        playerJLabel.setVisible(status);
+    }
+    
+    private void InitCards()
+    {
+        for(int i=0;i<cardBoxes.size();i++)
+        {
+            cardBoxes.get(i).setIcon(null);
+        }
+    }
+    
+    private void InitActionButtons()
+    {
+        dealJButton.setEnabled(true);
+        hitJButton.setEnabled(false);
+        standJButton.setEnabled(false);
+    }
+    
+    private void dealerPlay()
+    {
+        try
+        {
+            //White hand value is under 17 
+            //Dealer must deal cards 
+            String[] cards = dealerCards.split("\t");
+            
+            for(int i = 0;i<cards.length; i++)
+            {
+                displayCard(i,cards[i]);
+            }
+            
+            while(blackjackProxy.getHandValue(dealerCards) < 17)
+            {
+                String newCard = blackjackProxy.dealCard(); //New card 
+                dealerCards += "\t" + newCard;
+                displayCard(currentDealerCard, newCard);
+                ++currentDealerCard;
+                JOptionPane.showMessageDialog(this, "Dealer takes a card", "Dealer's turn", JOptionPane.PLAIN_MESSAGE);
+            }
+            
+            int dealersTotal = blackjackProxy.getHandValue(dealerCards);
+            int playersTotal = blackjackProxy.getHandValue(playerCards);
+            
+            if(dealersTotal > 21)
+            {
+                gameOver( GameStatus.WIN );
+                return;
+            }
+            
+            if(dealersTotal > playersTotal)
+            {
+                gameOver(GameStatus.LOSE);
+            }
+            else if(dealersTotal < playersTotal)
+            {
+                gameOver(GameStatus.WIN);
+            }
+            else
+            {
+                gameOver(GameStatus.PUSH);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void displayCard(int card, String cardValue)
+    {
+        try
+        {
+            JLabel displayLabel = cardBoxes.get(card);
+            
+            //Show back
+            if(cardValue.equals(""))
+            {
+                displayLabel.setIcon(new ImageIcon(getClass().getResource("/blackjackclient/images/back-blue.png")));
+                return;
+            }
+            
+            String face = cardValue.substring(0, cardValue.indexOf(" "));
+            String suit = cardValue.substring(cardValue.indexOf(" ") + 1);
+            
+            char suitLetter;
+            
+            switch(Integer.parseInt(suit))
+            {
+                case 0:
+                    suitLetter = 'h';
+                    break;
+                case 1:
+                    suitLetter = 'd';
+                    break;
+                case 2:
+                    suitLetter = 'c';
+                    break;
+                default:
+                    suitLetter = 's';
+                    break;
+            }
+            
+            displayLabel.setIcon( new ImageIcon(getClass().getResource("/blackjackclient/images/" + face + suitLetter + ".png")));
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void gameOver(GameStatus winner)
+    {
+        String[] cards = dealerCards.split("\t");
+        
+        for(int i=0;i<cards.length; i++)
+        {
+            displayCard(i,cards[i]);
+        }
+        
+        
+        if(winner == GameStatus.WIN)
+        {
+            gameResultsJLabel.setText("You win!");
+            //TODO - add score to user
+        }
+        else if(winner == GameStatus.LOSE)
+        {
+            gameResultsJLabel.setText("You lose.");
+            //TODO - remove score from user
+        }
+        else if(winner == GameStatus.PUSH)
+        {
+            gameResultsJLabel.setText("It's push.");
+        }
+        else // blackjack
+        {
+            gameResultsJLabel.setText("Blackjack!");
+            //TODO - add score to user
+        }
+        
+        int dealersTotal = blackjackProxy.getHandValue(dealerCards);
+        int playersTotal = blackjackProxy.getHandValue(playerCards);
+        InitLabelsSatus(true,dealersTotal,playersTotal);
+        
+        setActionButtonStatus(false,false,true);
     }
 
+    private void setActionButtonStatus(Boolean standStatus,Boolean hitStatus, Boolean dealStatus)
+    {
+        standJButton.setEnabled(standStatus);
+        hitJButton.setEnabled(hitStatus);
+        dealJButton.setEnabled(dealStatus);
+    }
+            
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,16 +281,16 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
         dealerCard10JLabel = new javax.swing.JLabel();
         dealerCard5JLabel = new javax.swing.JLabel();
         playerCard1JLabel = new javax.swing.JLabel();
-        playerCard1JLabel1 = new javax.swing.JLabel();
-        playerCard1JLabel2 = new javax.swing.JLabel();
-        playerCard1JLabel3 = new javax.swing.JLabel();
-        playerCard1JLabel4 = new javax.swing.JLabel();
-        playerCard1JLabel5 = new javax.swing.JLabel();
-        playerCard1JLabel6 = new javax.swing.JLabel();
-        playerCard1JLabel7 = new javax.swing.JLabel();
-        playerCard1JLabel8 = new javax.swing.JLabel();
-        playerCard1JLabel9 = new javax.swing.JLabel();
-        playerCard1JLabel10 = new javax.swing.JLabel();
+        playerCard2JLabel = new javax.swing.JLabel();
+        playerCard3JLabel = new javax.swing.JLabel();
+        playerCard4JLabel = new javax.swing.JLabel();
+        playerCard5JLabel = new javax.swing.JLabel();
+        playerCard6JLabel = new javax.swing.JLabel();
+        playerCard8JLabel = new javax.swing.JLabel();
+        playerCard7JLabel = new javax.swing.JLabel();
+        playerCard9JLabel = new javax.swing.JLabel();
+        playerCard10JLabel = new javax.swing.JLabel();
+        playerCard11JLabel = new javax.swing.JLabel();
         gameResultsJLabel = new javax.swing.JLabel();
         dealerJLabel = new javax.swing.JLabel();
         dealerScoreJLabel = new javax.swing.JLabel();
@@ -64,12 +301,27 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
 
         dealJButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         dealJButton.setText("Deal");
+        dealJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dealJButtonActionPerformed(evt);
+            }
+        });
 
         hitJButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         hitJButton.setText("Hit");
+        hitJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hitJButtonActionPerformed(evt);
+            }
+        });
 
         standJButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         standJButton.setText("Stand");
+        standJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                standJButtonActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Dealer's hand:");
@@ -103,35 +355,35 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
         playerCard1JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
         playerCard1JLabel.setToolTipText("");
 
-        playerCard1JLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel1.setToolTipText("");
+        playerCard2JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard2JLabel.setToolTipText("");
 
-        playerCard1JLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel2.setToolTipText("");
+        playerCard3JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard3JLabel.setToolTipText("");
 
-        playerCard1JLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel3.setToolTipText("");
+        playerCard4JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard4JLabel.setToolTipText("");
 
-        playerCard1JLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel4.setToolTipText("");
+        playerCard5JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard5JLabel.setToolTipText("");
 
-        playerCard1JLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel5.setToolTipText("");
+        playerCard6JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard6JLabel.setToolTipText("");
 
-        playerCard1JLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel6.setToolTipText("");
+        playerCard8JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard8JLabel.setToolTipText("");
 
-        playerCard1JLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel7.setToolTipText("");
+        playerCard7JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard7JLabel.setToolTipText("");
 
-        playerCard1JLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel8.setToolTipText("");
+        playerCard9JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard9JLabel.setToolTipText("");
 
-        playerCard1JLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel9.setToolTipText("");
+        playerCard10JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard10JLabel.setToolTipText("");
 
-        playerCard1JLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
-        playerCard1JLabel10.setToolTipText("");
+        playerCard11JLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blackjackclient/images/1c.png"))); // NOI18N
+        playerCard11JLabel.setToolTipText("");
 
         gameResultsJLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         gameResultsJLabel.setText("Blackjack!");
@@ -164,25 +416,25 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(playerCard1JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel1)
+                                .addComponent(playerCard2JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel2)
+                                .addComponent(playerCard3JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel3)
+                                .addComponent(playerCard4JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel4)
+                                .addComponent(playerCard5JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel5))
+                                .addComponent(playerCard6JLabel))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(playerCard1JLabel7)
+                                .addComponent(playerCard7JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel6)
+                                .addComponent(playerCard8JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel8)
+                                .addComponent(playerCard9JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel9)
+                                .addComponent(playerCard10JLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(playerCard1JLabel10)))
+                                .addComponent(playerCard11JLabel)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -270,18 +522,18 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(playerCard1JLabel)
-                            .addComponent(playerCard1JLabel1)
-                            .addComponent(playerCard1JLabel2)
-                            .addComponent(playerCard1JLabel3)
-                            .addComponent(playerCard1JLabel4)
-                            .addComponent(playerCard1JLabel5))
+                            .addComponent(playerCard2JLabel)
+                            .addComponent(playerCard3JLabel)
+                            .addComponent(playerCard4JLabel)
+                            .addComponent(playerCard5JLabel)
+                            .addComponent(playerCard6JLabel))
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playerCard1JLabel7)
-                            .addComponent(playerCard1JLabel6)
-                            .addComponent(playerCard1JLabel8)
-                            .addComponent(playerCard1JLabel9)
-                            .addComponent(playerCard1JLabel10))
+                            .addComponent(playerCard7JLabel)
+                            .addComponent(playerCard8JLabel)
+                            .addComponent(playerCard9JLabel)
+                            .addComponent(playerCard10JLabel)
+                            .addComponent(playerCard11JLabel))
                         .addGap(30, 30, 30))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(dealerCard5JLabel)
@@ -290,6 +542,82 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void dealJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dealJButtonActionPerformed
+        
+        String card;
+        
+        for(int i =0; i<cardBoxes.size();i++)
+        {
+            cardBoxes.get(i).setIcon(null);
+        }
+        
+        InitLabelsSatus(false,0, 0);
+        
+        //Shuffle the cards in server - Ανακατεύει την τράπουλα στον Server
+        blackjackProxy.shuffle();
+        
+        //Deal two cards to player
+        playerCards = blackjackProxy.dealCard(); //First card of player
+        displayCard(11, playerCards); //Show first card
+        card = blackjackProxy.dealCard();
+        displayCard(12, card); //Show second card
+        playerCards += "\t" + card; //Add the second card
+        
+        //Deal two cards to Dealer
+        dealerCards = blackjackProxy.dealCard();
+        displayCard(0,dealerCards);
+        card = blackjackProxy.dealCard();
+        displayCard(1,""); //Show back place of dealer second card
+        dealerCards += "\t" + card;
+        
+        setActionButtonStatus(true,true,false);
+        
+        int dealersTotal = blackjackProxy.getHandValue(dealerCards);
+        int playersTotal = blackjackProxy.getHandValue(playerCards);
+        
+        if(playersTotal == dealersTotal && playersTotal == 21)
+        {
+            gameOver(GameStatus.PUSH);
+        }
+        else if(dealersTotal == 21)
+        {
+            gameOver(GameStatus.LOSE);
+        }
+        else if(playersTotal == 21)
+        {
+            gameOver(GameStatus.BLACKJACK);
+        }
+        
+        //Indexes of ArrayList<JLebel> cardBoxes
+        currentDealerCard = 2; 
+        currentPlayerCard = 13; 
+    }//GEN-LAST:event_dealJButtonActionPerformed
+
+    private void hitJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitJButtonActionPerformed
+        String card = blackjackProxy.dealCard();
+        playerCards += "\t" + card;
+        
+        displayCard(currentPlayerCard, card);
+        ++currentPlayerCard;
+        
+        int total = blackjackProxy.getHandValue(playerCards);
+        
+        if(total > 21) //player lose
+        {
+            gameOver(GameStatus.LOSE);
+        }
+        else if(total == 21)
+        {
+            hitJButton.setEnabled(false); //Player cannot take another card
+            dealerPlay();
+        }
+    }//GEN-LAST:event_hitJButtonActionPerformed
+
+    private void standJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_standJButtonActionPerformed
+        setActionButtonStatus(false,false,true);
+        dealerPlay();
+    }//GEN-LAST:event_standJButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -345,17 +673,17 @@ public class BlackjackClientJFrame extends javax.swing.JFrame {
     private javax.swing.JButton hitJButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel playerCard10JLabel;
+    private javax.swing.JLabel playerCard11JLabel;
     private javax.swing.JLabel playerCard1JLabel;
-    private javax.swing.JLabel playerCard1JLabel1;
-    private javax.swing.JLabel playerCard1JLabel10;
-    private javax.swing.JLabel playerCard1JLabel2;
-    private javax.swing.JLabel playerCard1JLabel3;
-    private javax.swing.JLabel playerCard1JLabel4;
-    private javax.swing.JLabel playerCard1JLabel5;
-    private javax.swing.JLabel playerCard1JLabel6;
-    private javax.swing.JLabel playerCard1JLabel7;
-    private javax.swing.JLabel playerCard1JLabel8;
-    private javax.swing.JLabel playerCard1JLabel9;
+    private javax.swing.JLabel playerCard2JLabel;
+    private javax.swing.JLabel playerCard3JLabel;
+    private javax.swing.JLabel playerCard4JLabel;
+    private javax.swing.JLabel playerCard5JLabel;
+    private javax.swing.JLabel playerCard6JLabel;
+    private javax.swing.JLabel playerCard7JLabel;
+    private javax.swing.JLabel playerCard8JLabel;
+    private javax.swing.JLabel playerCard9JLabel;
     private javax.swing.JLabel playerJLabel;
     private javax.swing.JLabel playerScoreJLabel;
     private javax.swing.JButton standJButton;
